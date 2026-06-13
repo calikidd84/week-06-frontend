@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Week 06 Frontend - BookTracker AI Dashboard
 
-## Getting Started
+This is a Next.js frontend for the Week 06 Book Tracker project. It displays the book library from the FastAPI backend and includes an AI assistant panel for chat, book recommendations, and agent-powered library updates.
 
-First, run the development server:
+![BookTracker app screenshot](./images/BookTracker_App.png)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Features
+
+- Library dashboard with book cards, search, genre filtering, status filtering, and pagination.
+- AI assistant chat panel.
+- Intent routing that sends recommendation requests, general chat, and book-management requests to the correct backend API.
+- Next.js API routes that proxy frontend requests to the Week 06 FastAPI backend.
+
+## Requirements
+
+- Node.js 20+
+- npm
+- The [week-06-api](https://github.com/calikidd84/week-06-api) backend running locally or at a reachable URL
+
+## Environment Variables
+
+Create a `.env.local` file in the `week-06-frontend` folder before starting the app.
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+`NEXT_PUBLIC_API_URL` should point to the Week 06 backend API. Use `http://localhost:8000` when running the backend locally with Docker Compose or `uvicorn`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The frontend does not need your OpenRouter key directly. AI keys belong in the backend project's `.env` file because the frontend proxies AI requests through the backend.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Start the Backend
 
-## Learn More
+Start the backend first from the [week-06-api](https://github.com/calikidd84/week-06-api) folder/repo:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+docker compose up --build
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Or run it locally with Python:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+uvicorn main:app --reload
+```
 
-## Deploy on Vercel
+The backend should be available at `http://localhost:8000`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Start the Frontend
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+From the `week-06-frontend` folder:
+
+```bash
+npm install
+npm run dev
+```
+
+Open the app at:
+
+```text
+http://localhost:3000
+```
+
+## Available Scripts
+
+- `npm run dev` starts the Next.js development server.
+- `npm run build` builds the production app.
+- `npm run start` starts the production build.
+- `npm run lint` runs the configured lint command.
+
+## API Connections
+
+The browser talks to local Next.js routes under `/api/*`. Those routes forward requests to the backend URL from `NEXT_PUBLIC_API_URL`.
+
+- `GET /api/books` proxies to `GET /books`.
+- `POST /api/ai/chat` proxies to `POST /ai/chat`.
+- `POST /api/ai/recommend` proxies to `POST /ai/recommend`.
+- `POST /api/ai/agent` proxies to `POST /ai/agent`.
+
+If the frontend shows `Error: could not reach backend`, confirm the backend is running and that `.env.local` points to the correct backend URL.
